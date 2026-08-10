@@ -4,4 +4,6 @@ __pycache__/
 *.pyc
 .venv/
 .env
-data/processed/marketing_analytics.db
+
+# Local database
+data/processed/*.db
