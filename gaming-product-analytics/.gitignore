@@ -1,0 +1,18 @@
+# Large/raw datasets
+data/raw/
+
+# Local database
+data/processed/gaming_analytics.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+.env
+.venv/

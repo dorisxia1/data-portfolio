@@ -1,0 +1,4 @@
+Severity Tier,Mean Difference: High vs. Low Black ZIP (seconds),Median Difference: High vs. Low Black ZIP (seconds)
+High,35.3011465438297,32.0
+Medium,61.088881480351354,43.0
+Low,132.41611364513813,81.0

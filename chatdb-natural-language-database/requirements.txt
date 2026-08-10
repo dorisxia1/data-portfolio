@@ -1,0 +1,6 @@
+openai
+pymysql
+pymongo
+pandas
+tabulate
+graphviz
