@@ -4,7 +4,7 @@ Hi, I'm Doris! I hold an **M.S. in Applied Data Science from the University of S
 
 I'm interested in using data to understand how products, systems, and people behave — and turning that analysis into decisions that are actually useful.
 
-This portfolio includes projects across **product analytics, statistical analysis, data visualization, and data systems**, using tools including Python, SQL, Power BI, Tableau, and statistical modeling.
+This portfolio includes projects across **product analytics, experimentation, statistical analysis, data visualization, and data systems**, using tools including Python, SQL, Power BI, Tableau, and statistical modeling.
 
 ---
 
@@ -25,6 +25,26 @@ Built an end-to-end analytics workflow spanning data preparation, SQL analysis, 
 - Translated behavioral patterns into recommendations for product and portfolio strategy
 
 [View Project →](gaming-product-analytics/)
+
+---
+
+### [Marketing Experiment & Incrementality Analysis](marketing-experiment-analysis/)
+
+**Experimentation · Python · SQL · Statistical Analysis**
+
+Analyzed a **588K-user marketing A/B experiment** to determine whether advertising generated incremental conversions relative to a PSA control group and whether the observed lift was economically meaningful.
+
+Combined statistical inference with business sensitivity analysis to translate experimental lift into incremental conversions and break-even campaign thresholds.
+
+**Highlights**
+- Measured conversion lift from **1.785% to 2.555%**, a **43.1% relative increase**
+- Applied a two-proportion z-test and 95% confidence interval to evaluate the treatment effect
+- Estimated approximately **4,343 incremental conversions** attributable to the advertising condition
+- Built a break-even sensitivity analysis connecting incremental conversions to campaign economics
+- Used SQL to reproduce core experiment metrics and segment conversion behavior
+- Distinguished causal experiment results from descriptive post-treatment exposure and timing patterns
+
+[View Project →](marketing-experiment-analysis/)
 
 ---
 
@@ -87,7 +107,7 @@ The project explores how natural-language interfaces can make structured and sem
 **Programming & Data:** Python, SQL, Pandas, NumPy, Data Cleaning, ETL, Data Validation  
 **Databases:** MySQL, SQLite, MongoDB  
 **Visualization & BI:** Power BI, Tableau, Matplotlib, Amplitude  
-**Analytics:** Statistical Analysis, Hypothesis Testing, Regression  
+**Analytics:** A/B Testing, Experimentation, Statistical Analysis, Hypothesis Testing, Confidence Intervals, Regression  
 **Tools:** Git, Excel, AWS
 
 ---
@@ -97,6 +117,7 @@ The project explores how natural-language interfaces can make structured and sem
 ```text
 data-portfolio/
 ├── gaming-product-analytics/
+├── marketing-experiment-analysis/
 ├── nyc-ems-fairness-analysis/
 ├── dementia-risk-hotspots-visualization/
 ├── chatdb-natural-language-database/
