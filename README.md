@@ -48,6 +48,26 @@ Combined statistical inference with business sensitivity analysis to translate e
 
 ---
 
+### [KKBox Cohort Retention Analysis](kkbox-retention-analysis/)
+
+**Product Analytics · Retention · Python · Cohort Analysis**
+
+Analyzed longitudinal listening behavior from the KKBox churn-prediction dataset to understand how user retention evolves after registration and how early engagement relates to longer-term usage.
+
+Built a memory-efficient pipeline to transform hundreds of millions of daily listening records into user-month activity, then used acquisition cohorts to measure activation, retention, early engagement, and registration-channel quality.
+
+**Highlights**
+- Processed **392M+ historical listening-log rows** using chunked aggregation and Parquet intermediate storage
+- Measured an **84.0% Month-0 activation rate** and weighted retention of **25.4% at M1**, **13.3% at M3**, **11.8% at M6**, and **11.2% at M12**
+- Found a **74.7 percentage-point M1 retention gap** between the highest- and lowest-engagement groups
+- Normalized early engagement for the number of days available after registration to make Month-0 comparisons more meaningful
+- Identified substantial differences in downstream retention across major acquisition channels despite relatively similar activation rates
+- Evaluated transaction-data coverage and explicitly limited conclusions after detecting strong selection bias in the transaction-observed subgroup
+
+[View Project →](kkbox-retention-analysis/)
+
+---
+
 ### [NYC EMS Fairness Analysis](nyc-ems-fairness-analysis/)
 
 **Statistical Analysis · Python · Data Integration · Fairness Evaluation**
@@ -107,7 +127,7 @@ The project explores how natural-language interfaces can make structured and sem
 **Programming & Data:** Python, SQL, Pandas, NumPy, Data Cleaning, ETL, Data Validation  
 **Databases:** MySQL, SQLite, MongoDB  
 **Visualization & BI:** Power BI, Tableau, Matplotlib, Amplitude  
-**Analytics:** A/B Testing, Experimentation, Statistical Analysis, Hypothesis Testing, Confidence Intervals, Regression  
+**Analytics:** Product Analytics, Cohort Analysis, Retention Analysis, A/B Testing, Experimentation, Statistical Analysis, Hypothesis Testing, Confidence Intervals, Regression  
 **Tools:** Git, Excel, AWS
 
 ---
@@ -118,6 +138,7 @@ The project explores how natural-language interfaces can make structured and sem
 data-portfolio/
 ├── gaming-product-analytics/
 ├── marketing-experiment-analysis/
+├── kkbox-retention-analysis/
 ├── nyc-ems-fairness-analysis/
 ├── dementia-risk-hotspots-visualization/
 ├── chatdb-natural-language-database/
