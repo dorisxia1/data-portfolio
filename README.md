@@ -1,122 +1,62 @@
 # Data Portfolio
 
-Hi, I'm Doris! I hold an **M.S. in Applied Data Science from the University of Southern California** and a **B.S. in Business Analytics and Information Technology from Rutgers University-New Brunswick**.
+Hi, I'm Doris. I have an M.S. in Applied Data Science from USC and a B.S. in Business Analytics and Information Technology from Rutgers, and I like using data to figure out how products, systems, and people actually behave — not just to produce a chart, but to get to a decision someone can act on.
 
-I'm interested in using data to understand how products, systems, and people behave — and turning that analysis into decisions that are actually useful.
-
-This portfolio includes projects across **product analytics, experimentation, statistical analysis, data visualization, and data systems**, using tools including Python, SQL, Power BI, Tableau, and statistical modeling.
+The projects below span product analytics, experimentation, statistical analysis, visualization, and a couple of data-systems detours. Tools I used across them: Python, SQL, Power BI, Tableau, and a fair amount of statistical modeling.
 
 ---
 
 ## Projects
 
 ### [Steam Player Engagement & Product Analytics](gaming-product-analytics/)
+*Product Analytics · SQL · Python · Power BI*
 
-**Product Analytics · SQL · Python · Power BI**
-
-Analyzed **41M+ Steam recommendation records** to understand how player engagement, satisfaction, pricing, and review volume relate to product performance.
-
-Built an end-to-end analytics workflow spanning data preparation, SQL analysis, dashboard development, and product recommendations.
-
-**Highlights**
-- Created a validated analytical sample of **12,460 games**
-- Used SQL to segment and compare engagement, satisfaction, and pricing patterns
-- Built a three-page Power BI dashboard covering portfolio health, engagement, satisfaction, and product performance
-- Translated behavioral patterns into recommendations for product and portfolio strategy
+Started from a question I kept running into at my Game Analyst internship: does high engagement actually mean players are happy, or does it just mean the game takes a long time? Worked through 41M+ Steam recommendation records down to a reliable sample of 12,460 games, then used SQL for the segmentation and a three-page Power BI dashboard to make the findings usable. The short version: satisfaction and engagement move pretty independently, and treating playtime as a proxy for quality is a mistake.
 
 [View Project →](gaming-product-analytics/)
 
 ---
 
 ### [Marketing Experiment & Incrementality Analysis](marketing-experiment-analysis/)
+*Experimentation · Python · SQL · Statistical Analysis*
 
-**Experimentation · Python · SQL · Statistical Analysis**
-
-Analyzed a **588K-user marketing A/B experiment** to determine whether advertising generated incremental conversions relative to a PSA control group and whether the observed lift was economically meaningful.
-
-Combined statistical inference with business sensitivity analysis to translate experimental lift into incremental conversions and break-even campaign thresholds.
-
-**Highlights**
-- Measured conversion lift from **1.785% to 2.555%**, a **43.1% relative increase**
-- Applied a two-proportion z-test and 95% confidence interval to evaluate the treatment effect
-- Estimated approximately **4,343 incremental conversions** attributable to the advertising condition
-- Built a break-even sensitivity analysis connecting incremental conversions to campaign economics
-- Used SQL to reproduce core experiment metrics and segment conversion behavior
-- Distinguished causal experiment results from descriptive post-treatment exposure and timing patterns
+An A/B test analysis built to answer two questions instead of one: did the campaign work, and was it worth what it cost? 588K users, conversion lift from 1.785% to 2.555% (a two-proportion z-test with a 95% CI that never touches zero), which works out to roughly 4,343 incremental conversions. Since the dataset doesn't include cost or revenue data, I built a break-even sensitivity analysis instead of guessing at an ROI number — translates the lift into "how much would a conversion need to be worth for this to pay for itself."
 
 [View Project →](marketing-experiment-analysis/)
 
 ---
 
 ### [KKBox Cohort Retention Analysis](kkbox-retention-analysis/)
+*Product Analytics · Retention · Python · Cohort Analysis*
 
-**Product Analytics · Retention · Python · Cohort Analysis**
-
-Analyzed longitudinal listening behavior from the KKBox churn-prediction dataset to understand how user retention evolves after registration and how early engagement relates to longer-term usage.
-
-Built a memory-efficient pipeline to transform hundreds of millions of daily listening records into user-month activity, then used acquisition cohorts to measure activation, retention, early engagement, and registration-channel quality.
-
-**Highlights**
-- Processed **392M+ historical listening-log rows** using chunked aggregation and Parquet intermediate storage
-- Measured an **84.0% Month-0 activation rate** and weighted retention of **25.4% at M1**, **13.3% at M3**, **11.8% at M6**, and **11.2% at M12**
-- Found a **74.7 percentage-point M1 retention gap** between the highest- and lowest-engagement groups
-- Normalized early engagement for the number of days available after registration to make Month-0 comparisons more meaningful
-- Identified substantial differences in downstream retention across major acquisition channels despite relatively similar activation rates
-- Evaluated transaction-data coverage and explicitly limited conclusions after detecting strong selection bias in the transaction-observed subgroup
+Wanted a retention project on real production-scale data instead of something simulated, which meant building a chunked pipeline to process 392M+ rows of daily listening logs into user-month activity. Cohorts show 84.0% Month-0 activation but retention drops fast after that — 25.4% at Month 1, down to 11.2% by Month 12. The more interesting finding: how deeply someone engages in their first month (normalized for how many days they'd actually had since registering) predicts a 74.7-point gap in Month-1 retention between the highest- and lowest-engagement groups. Also found that acquisition channels look similar on activation but diverge hugely on downstream retention.
 
 [View Project →](kkbox-retention-analysis/)
 
 ---
 
 ### [NYC EMS Fairness Analysis](nyc-ems-fairness-analysis/)
+*Statistical Analysis · Python · Data Integration · Fairness Evaluation*
 
-**Statistical Analysis · Python · Data Integration · Fairness Evaluation**
-
-Investigated whether emergency response times differ across NYC neighborhoods after accounting for medical urgency and operational factors.
-
-Built an end-to-end analytical pipeline combining NYC EMS dispatch records with U.S. Census demographic data to evaluate disparities within comparable severity levels.
-
-**Highlights**
-- Built a multi-stage Python pipeline for data ingestion, cleaning, integration, and analysis
-- Compared response times across demographic and socioeconomic groups within severity tiers
-- Applied hypothesis testing and OLS regression to evaluate observed disparities
-- Conducted geographic robustness analysis and generated final statistical tables and visualizations
+A conditional-fairness question: after controlling for how urgent an incident actually was, do NYC neighborhoods still see different emergency response times? Merged EMS dispatch data with Census ACS demographics, split incidents into severity tiers, and compared response times within tiers rather than across raw citywide averages. Response times were consistently longer in ZIP codes with higher Black population share and in lower-income neighborhoods, and the association held up after regression controls for borough and time of day. I'm careful throughout about what this can and can't establish — it's an area-level, observational association, not a claim about individual patients or a specific cause.
 
 [View Project →](nyc-ems-fairness-analysis/)
 
 ---
 
 ### [Dementia Risk Hotspots Visualization](dementia-risk-hotspots-visualization/)
+*Data Visualization · Regression · Vue.js · Geographic Analysis*
 
-**Data Visualization · Regression · Vue.js · Geographic Analysis**
-
-Developed an interactive county-level visualization exploring where dementia prevalence is substantially higher or lower than expected based on underlying health risk factors.
-
-This portfolio project highlights my individual contribution to a collaborative USC data visualization project.
-
-**Highlights**
-- Developed a regression-based **Mismatch Index** comparing observed and expected dementia prevalence
-- Integrated NORC Dementia DataHub and CDC PLACES health measures
-- Built an interactive county-level choropleth to reveal geographic patterns
-- Added state-level highlighting and interactive exploration to surface unusually high- or low-mismatch areas
+My piece of a team data-viz project from a USC course. Built a regression-based "Mismatch Index" comparing each county's actual dementia prevalence to what you'd expect given its stroke, diabetes, and cognitive-disability rates, then mapped the gap as an interactive choropleth with state-level highlighting to surface the biggest outliers.
 
 [View Project →](dementia-risk-hotspots-visualization/)
 
 ---
 
 ### [ChatDB — Natural Language Database Interface](chatdb-natural-language-database/)
+*Databases · Python · SQL · MongoDB · LLMs*
 
-**Databases · Python · SQL · MongoDB · LLMs**
-
-Built an application that translates natural-language questions into executable queries across relational and NoSQL databases.
-
-The project explores how natural-language interfaces can make structured and semi-structured data easier to query without requiring users to write database queries directly.
-
-**Highlights**
-- Translated natural-language questions into SQL and MongoDB queries
-- Built schema-aware workflows for relational and NoSQL databases
-- Developed data-loading and transformation pipelines for MySQL and MongoDB
-- Created an application interface for querying and exploring database results
+A group project — an app that takes a plain-English question and figures out on its own whether it belongs to a MySQL database or a MongoDB one, generates the right query with an LLM, and returns a readable answer. My piece was the MongoDB half: designing the schema for wage-by-education data, building the load pipeline, and getting it to plug into the same natural-language interface as the SQL side.
 
 [View Project →](chatdb-natural-language-database/)
 
@@ -124,15 +64,15 @@ The project explores how natural-language interfaces can make structured and sem
 
 ## Technical Skills
 
-**Programming & Data:** Python, SQL, Pandas, NumPy, Data Cleaning, ETL, Data Validation  
-**Databases:** MySQL, SQLite, MongoDB  
-**Visualization & BI:** Power BI, Tableau, Matplotlib, Amplitude  
-**Analytics:** Product Analytics, Cohort Analysis, Retention Analysis, A/B Testing, Experimentation, Statistical Analysis, Hypothesis Testing, Confidence Intervals, Regression  
+**Programming & Data:** Python, SQL, Pandas, NumPy, Data Cleaning, ETL, Data Validation
+**Databases:** MySQL, SQLite, MongoDB
+**Visualization & BI:** Power BI, Tableau, Matplotlib, Amplitude
+**Analytics:** Product Analytics, Cohort Analysis, Retention Analysis, A/B Testing, Experimentation, Statistical Analysis, Hypothesis Testing, Confidence Intervals, Regression
 **Tools:** Git, Excel, AWS
 
 ---
 
-## Portfolio Structure
+## Structure
 
 ```text
 data-portfolio/
@@ -145,4 +85,4 @@ data-portfolio/
 └── README.md
 ```
 
-Each project contains its own documentation covering the data, methodology, analysis, results, and relevant project files.
+Each project folder has its own README with the full data, methodology, and results — this page is just the map.

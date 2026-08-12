@@ -1,324 +1,59 @@
 # Marketing Experiment & Incrementality Analysis
 
-An A/B testing project evaluating whether an advertising campaign generated incremental conversions compared with a PSA control group, and whether the observed lift was large enough to justify continued investment.
+Most A/B test writeups stop at "the p-value was small, ship it." I wanted to build one that didn't — where the actual deliverable is a decision, not a test statistic. So this project asks two questions instead of one: did the ad campaign work, *and* was it worth what it cost?
 
-The analysis combines **Python, statistical hypothesis testing, SQL, data visualization, and business sensitivity analysis** to move from experimental results to an actionable campaign recommendation.
+## The setup
 
----
+The data comes from a real ad campaign ([Marketing A/B Testing, Kaggle](https://www.kaggle.com/datasets/faviovaz/marketing-ab-testing)) — 588,101 users, split between an `ad` group who saw the actual campaign and a `psa` control group who got a public service announcement instead. For each user I have whether they converted, how many total ads they were shown, and the day/hour they were most exposed. That's it — no cost data, no revenue data, which turned out to matter a lot for how I approached the second half of the project.
 
-## Project Overview
+One thing worth flagging up front: the split wasn't even — about 96% of users landed in the ad group and only 4% in PSA. I don't have the intended allocation ratio, so I can't say for certain whether that's a sample-ratio mismatch or just how the experiment was designed. I noted it rather than pretending it isn't there.
 
-Digital marketing experiments often answer a statistical question — *did the treatment outperform the control?* — without answering the more important business question:
+## Did the ads work?
 
-> **Was the improvement large enough to justify the investment?**
+Yes, and not marginally:
 
-This project analyzes a marketing experiment in which users were assigned to either:
-
-- **Advertising (`ad`)** — users exposed to the advertising campaign
-- **PSA (`psa`)** — users exposed to a public service announcement as the control condition
-
-The primary objective is to determine whether advertising increased conversion and translate the estimated treatment effect into incremental conversions and break-even campaign economics.
-
-Additional exploratory analyses examine whether conversion patterns differ by exposure frequency, day, and hour.
-
----
-
-## Business Questions
-
-The analysis addresses five questions:
-
-1. Did the advertising campaign significantly increase conversion?
-2. How large was the treatment effect in practical terms?
-3. How many incremental conversions can be attributed to the advertising condition?
-4. Under different values per conversion, how much could the campaign cost before becoming uneconomical?
-5. What additional hypotheses can be generated from exposure-frequency and campaign-timing patterns?
-
----
-
-## Dataset
-
-**Source:** [Marketing A/B Testing — Kaggle](https://www.kaggle.com/datasets/faviovaz/marketing-ab-testing)
-
-The dataset contains **588,101 user-level observations**.
-
-| Variable | Description |
-|---|---|
-| `user id` | Unique user identifier |
-| `test group` | Experimental assignment (`ad` or `psa`) |
-| `converted` | Whether the user converted |
-| `total ads` | Number of campaign exposures recorded for the user |
-| `most ads day` | Day on which the user received the most exposures |
-| `most ads hour` | Hour during which the user received the most exposures |
-
-After validation:
-
-- 588,101 rows
-- 588,101 unique users
-- No duplicate user IDs
-- No missing values in the analytical fields
-
-The observed experiment allocation was approximately **96% advertising and 4% PSA**. Because the intended allocation probability is not provided with the dataset, this imbalance is documented rather than treated as evidence of sample-ratio mismatch.
-
----
-
-## Tools & Methods
-
-**Python**
-- pandas
-- NumPy
-- Matplotlib
-- statsmodels
-
-**SQL**
-- SQLite
-- Aggregation
-- Conditional logic
-- Window functions
-- Segmentation
-
-**Statistical methods**
-- Two-proportion z-test
-- 95% confidence interval for difference in proportions
-- Absolute and relative treatment lift
-- Incremental conversion estimation
-- Break-even sensitivity analysis
-
----
-
-## Experiment Design
-
-The primary metric is **conversion rate**.
-
-### Hypotheses
-
-**Null hypothesis (H₀):**
-
-The conversion rate is equal between users assigned to advertising and users assigned to PSA.
-
-**Alternative hypothesis (H₁):**
-
-The conversion rates differ between the advertising and PSA conditions.
-
-A two-sided hypothesis test with **α = 0.05** was used.
-
-The primary treatment effect is evaluated using both statistical significance and effect magnitude rather than relying on the p-value alone.
-
----
-
-## Key Results
-
-| Metric | PSA Control | Advertising |
+| | PSA Control | Advertising |
 |---|---:|---:|
 | Users | 23,524 | 564,577 |
 | Conversions | 420 | 14,423 |
-| Conversion Rate | **1.785%** | **2.555%** |
+| Conversion Rate | 1.785% | 2.555% |
 
-The advertising condition produced:
+That's a 0.769 percentage-point absolute lift, or about 43% relative — z = 7.37, p < 0.001, 95% CI on the lift is [0.595%, 0.943%], entirely above zero. Statistically this isn't close.
 
-- **+0.769 percentage points absolute lift**
-- **+43.1% relative lift**
-- **z-statistic: 7.37**
-- **p-value: < 0.001**
-- **95% CI for absolute lift: +0.595 to +0.943 percentage points**
-
-The confidence interval lies entirely above zero, providing strong evidence that assignment to advertising increased conversion relative to the PSA condition.
-
----
-
-## Primary Experiment Result
+But I didn't want to stop at "significant." At 588K users, almost any real effect is going to clear that bar — the more useful number is how many actual conversions that lift represents. If the ad group had converted at the PSA rate instead, I'd expect about 10,080 conversions; they actually generated 14,423. That's roughly **4,343 incremental conversions**, with a 95% CI of about 3,360 to 5,326.
 
 ![Advertising vs. PSA Conversion Rate](outputs/figures/01_conversion_rate_comparison.png)
 
-Users assigned to advertising converted at **2.555%**, compared with **1.785%** for the PSA control.
+## Turning that into a business answer
 
-While the difference is statistically significant, the analysis goes beyond significance testing by estimating the number of conversions generated incrementally by the treatment.
+Here's the problem: I don't know what the campaign cost, and I don't know what a conversion is actually worth. Rather than picking an arbitrary dollar figure and pretending I know the ROI, I flipped the question — instead of "what's the ROI," I asked "**how much would a conversion need to be worth for this campaign to break even?**"
 
----
-
-## Incremental Conversion Impact
-
-If users in the advertising group had instead converted at the PSA control rate, approximately:
-
-**10,080 conversions**
-
-would have been expected.
-
-The advertising group actually produced:
-
-**14,423 conversions**
-
-This implies approximately:
-
-> **4,343 incremental conversions**
-
-The 95% confidence interval for the treatment effect corresponds to approximately:
-
-> **3,360 to 5,326 incremental conversions**
-
-This translates the statistical treatment effect into a metric that can be used for business decision-making.
-
----
-
-## Business Significance
-
-The dataset does not provide campaign cost, revenue per conversion, or contribution margin per conversion.
-
-Rather than inventing a single ROI estimate, the analysis uses a **break-even sensitivity analysis**.
-
-For a given value per incremental conversion:
-
-**Break-even campaign cost = estimated incremental conversions × value per incremental conversion**
-
-For example, if an incremental conversion contributes **$100 in business value**:
-
-- Estimated break-even campaign cost: **~$434,000**
-- Conservative break-even threshold using the lower 95% confidence bound: **~$336,000**
+Break-even cost = incremental conversions × value per conversion. So if a conversion is worth $100, the campaign breaks even around $434K in spend (or about $336K using the conservative lower-CI bound). Plug in your own assumption about conversion value and the answer scales linearly — which is really the point. This turns a single p-value into something a stakeholder with actual cost numbers could use immediately.
 
 ![Break-Even Campaign Analysis](outputs/figures/02_break_even_analysis.png)
 
-This allows the experimental result to support a real business decision:
+## Where I had to be careful
 
-> If actual campaign costs fall comfortably below the relevant break-even threshold, continued investment is supported by the experimental evidence.
-
----
-
-## Exposure Frequency Analysis
-
-The dataset also records the number of exposures accumulated by each user.
-
-Advertising exposure was highly right-skewed:
-
-- Median advertising exposure: **13**
-- 99th percentile: **201**
-- Maximum observed exposure: **2,065**
-
-Conversion increased substantially across higher exposure-frequency bands.
-
-However, this pattern appeared in **both the advertising and PSA groups**.
+The dataset also has `total ads` — how many times each user was exposed — and conversion climbs sharply with it, from about 0.25% at 1–5 exposures up to nearly 18% at 101–200 exposures. My first instinct was "great, more ads = more conversions, show more ads." But that pattern shows up in the **PSA group too**, not just advertising. Exposure count wasn't randomized — it's something that happened *after* assignment, and it's probably picking up on how active a user is on the platform generally, not a causal effect of ad volume.
 
 ![Conversion by Exposure Frequency](outputs/figures/03_exposure_frequency_comparison.png)
 
-For example, advertising-group conversion increased from approximately **0.25% among users with 1–5 exposures** to **17.68% among users with 101–200 exposures**.
+So I'm explicit about this in the analysis: I'm not claiming showing people more ads causes more conversions. That would need its own randomized frequency test. Same logic applies to the day/hour timing patterns — interesting, but not something I'd act on without testing it directly.
 
-But PSA conversion also increased substantially across exposure bands.
+## Bottom line
 
-This is an important analytical distinction.
+**Continue the campaign, conditional on the actual numbers.** The experiment is solid evidence that advertising beats the PSA control — the confidence interval never touches zero, and the incremental-conversion estimate gives a concrete number to work with. Whether it's worth continuing comes down to comparing real campaign cost against the break-even threshold for whatever a conversion is actually worth to the business. I can't answer that without cost data, but I've set up the framework so someone who has it can.
 
-`total ads` is an observed **post-assignment variable**, not an independently randomized treatment. Users accumulating many exposures may also be more active, spend more time on the platform, or simply have more opportunities to convert.
+If I were designing the next round of testing, I'd want to see:
+- **A randomized exposure-frequency test** — actually assign different ad frequencies instead of just observing them, to find whether there's a point of diminishing returns.
+- **A randomized timing test** — same idea, applied to delivery windows.
+- **Cost and revenue data captured alongside the experiment**, so incremental profit and cost-per-conversion could be calculated directly instead of through a sensitivity table.
 
-Therefore:
+## What this data can't tell me
 
-> **The analysis does not conclude that showing users more ads causes higher conversion.**
+No cost or revenue-per-conversion data, no documented target allocation ratio, limited pre-treatment user info for balance checks, and exposure frequency / timing weren't randomized — so those two pieces are hypothesis-generating, not causal claims. None of that undermines the core ad-vs-PSA result, but it's why I kept the secondary analyses framed as "worth testing further" rather than "here's what to do."
 
-A separate experiment randomizing exposure frequency would be required to estimate diminishing returns or establish an optimal frequency cap.
-
----
-
-## Campaign Timing Analysis
-
-Conversion was also examined by the day and hour of highest exposure.
-
-The advertising group generally maintained higher observed conversion rates than the PSA group, but the magnitude of the difference varied across timing segments.
-
-Some low-traffic hourly PSA segments contained relatively small samples because only approximately 4% of users belonged to the control condition.
-
-Because exposure timing was not independently randomized, these patterns are treated as **hypothesis-generating rather than causal**.
-
-They could inform future experiments testing whether randomized delivery windows improve campaign efficiency.
-
----
-
-## Business Recommendation
-
-### Continue the advertising campaign — conditional on campaign economics.
-
-The experiment provides strong evidence that advertising generated incremental conversions:
-
-- Conversion increased from **1.785% to 2.555%**
-- Relative lift was approximately **43.1%**
-- Approximately **4,343 incremental conversions** were estimated
-- The estimated treatment effect remained positive across the entire 95% confidence interval
-
-However, statistical significance does not automatically imply profitability.
-
-The final investment decision should compare:
-
-**Actual campaign cost**
-
-against
-
-**Incremental conversions × contribution value per conversion**
-
-If campaign costs fall comfortably below the corresponding break-even threshold, continued investment is supported.
-
-The exposure-frequency and timing analyses should **not** be used to immediately implement frequency caps or scheduling changes because those variables were not independently randomized.
-
-Instead, they provide hypotheses for future controlled experiments.
-
----
-
-## Recommended Next Experiments
-
-### 1. Randomized Exposure-Frequency Test
-
-Assign users to predefined advertising-frequency levels to estimate:
-
-- Incremental lift by exposure level
-- Diminishing returns
-- Marginal conversion value
-- Economically efficient frequency caps
-
-### 2. Randomized Campaign-Timing Test
-
-Randomize advertising delivery across time windows to determine whether observed day/hour differences represent genuine treatment-effect heterogeneity.
-
-### 3. Economics-Integrated Experiment
-
-Capture campaign spend and contribution value per conversion alongside experimental outcomes.
-
-This would allow future analyses to estimate:
-
-- Incremental revenue
-- Incremental profit
-- Cost per incremental conversion
-- Experiment-level ROI
-
----
-
-## Limitations
-
-- Campaign cost and contribution value per conversion are unavailable.
-- The intended experimental allocation ratio is undocumented.
-- Limited pre-treatment user characteristics are available for additional balance checks.
-- Exposure frequency was not independently randomized.
-- Day and hour of highest exposure were not independently randomized.
-- Some exploratory PSA segments contain relatively small sample sizes because of the 96/4 treatment allocation.
-
-These limitations do not invalidate the primary advertising-versus-PSA comparison, but they constrain the causal interpretation of secondary exposure and timing analyses.
-
----
-
-## SQL Analysis
-
-The core experiment metrics were also reproduced using SQL.
-
-The SQL analysis includes:
-
-- Treatment-group sample sizes
-- Conversion counts
-- Conversion rates
-- Treatment allocation
-- Exposure-frequency segmentation
-
-Statistical inference, including the two-proportion z-test and confidence interval, was performed in Python.
-
-See:
-
-`sql/experiment_metrics.sql`
-
----
-
-## Project Structure
+## Repo structure
 
 ```text
 marketing-experiment-analysis/
@@ -343,36 +78,18 @@ marketing-experiment-analysis/
 │
 └── outputs/
     └── figures/
-        ├── 01_conversion_rate_comparison.png
-        ├── 02_break_even_analysis.png
-        ├── 03_exposure_frequency_comparison.png
-        └── 04_hourly_conversion_patterns.png
 ```
 
----
+The SQL file reproduces the core group sizes, conversion counts, and rates — the actual hypothesis test and CI are done in Python (statsmodels), since SQLite doesn't have a native z-test.
 
-## Reproducing the Analysis
-
-Clone the repository and install the required Python packages:
+## Running it
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Then run:
+Then run `notebooks/01_experiment_analysis.ipynb` top to bottom — it walks through validation, the hypothesis test, the break-even analysis, and the exposure/timing exploration in order.
 
-```text
-notebooks/01_experiment_analysis.ipynb
-```
+## Tools
 
-The notebook performs the complete workflow from data validation through statistical inference, business sensitivity analysis, exploratory segmentation, and final recommendation.
-
----
-
-## Key Takeaway
-
-The advertising campaign generated a **statistically significant and practically meaningful increase in conversion**, corresponding to approximately **4,343 incremental conversions**.
-
-The experiment supports continued advertising investment **provided that actual campaign costs are below the economic value generated by those incremental conversions**.
-
-Just as importantly, the secondary analysis demonstrates why strong observational relationships — such as higher conversion among heavily exposed users — should not automatically be interpreted as causal without additional randomization.
+Python (pandas, NumPy, statsmodels, Matplotlib), SQLite for the SQL layer, two-proportion z-test and CI estimation for the core inference, break-even sensitivity analysis for the business translation.
